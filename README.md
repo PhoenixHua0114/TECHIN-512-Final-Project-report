@@ -62,7 +62,9 @@ circuitpython_game/
 ├── display_manager.py      # OLED display control
 ├── input_manager.py        # Input device management
 ├── led_manager.py          # NeoPixel LED control
-├── rotary_encoder.py 
+├── highscore_manager.py    # High score tracking
+├── highscores.txt          # Saved high scores (auto-created)
+├── rotary_encoder.py
 ├── lib
     ├── ...(All libaries used)
 ├── utils/
@@ -123,6 +125,17 @@ circuitpython_game/
 - **Aggressive Garbage Collection**: Runs `gc.collect()` multiple times between chapters
 - **Module Unloading**: Removes completed chapters from `sys.modules` to free RAM
 - **Shared I2C Bus**: Single I2C instance shared between display and accelerometer
+- **Time Tracking**: Tracks completion time from Chapter 1 start to Chapter 10 end
+- **High Score System**: Integrated high score tracking with persistent storage
+
+### High Score Manager (`highscore_manager.py`)
+- Tracks top 3 fastest completion times with player initials
+- **Persistent Storage**: Saves to `highscores.txt` on flash memory (~60 bytes)
+- **File Format**: Simple CSV format (INITIALS,TIME_SECONDS)
+- **Automatic Ranking**: Sorts scores by completion time (fastest first)
+- **Memory Efficient**: Only ~300-500 bytes RAM usage during operation
+- **Initial Entry**: Uses rotary encoder to select 3-character initials
+- **Display**: Shows high score board after game completion
 
 ### Chapter Base Class (`base_chapter.py`)
 - Provides common helper methods for all chapters:
@@ -155,6 +168,11 @@ circuitpython_game/
    - **Blue LED**: Progressing to next chapter
    - **Red LED**: Restarting current chapter
    - **Yellow LED**: Boot/power on state
+5. **After Completing Game**:
+   - Game displays completion time
+   - If top 3 fastest time: Enter 3 initials using rotary encoder
+   - View high score board (top 3 times)
+   - Option to restart: Returns to difficulty selection (opening screen only shown once)
 
 ## Game Flow
 
@@ -180,6 +198,46 @@ The game consists of 10 chapters with different challenges:
 ## Story Synopsis
 
 You wake up in a fog, exploring fragmented memories. Through various challenges, you discover the truth about a tragic event involving your brother and a well. The game explores themes of memory, guilt, and acceptance.
+
+## High Score System
+
+The game tracks the top 3 fastest completion times with persistent storage:
+
+### How It Works
+1. **Timer starts** when Chapter 1 begins
+2. **Timer stops** when Chapter 10 completes
+3. **Completion time** is calculated in seconds
+4. **Ranking check**: If your time is in top 3, you achieved a high score!
+
+### Entering Your Initials
+If you achieve a high score:
+- Display shows "NEW HIGH SCORE! Rank #X"
+- **Initial Entry Screen** appears with format: `[A] A  A`
+- **Controls**:
+  - **Rotary encoder**: Cycle through letters A-Z at current position
+  - **Left/Right buttons**: Move between the 3 initial positions
+  - **Encoder button**: Confirm and finish (no flashing screen)
+- Navigate between positions and set each letter, then press encoder to save
+
+### High Score Display
+After every game completion:
+- Shows high score board with top 3 times
+- Format: `#1 ABC 12:34` (rank, initials, time in MM:SS)
+- Each score displays for 3 seconds
+- Press encoder button to advance faster
+
+### Data Storage
+- Saved to `highscores.txt` on flash memory
+- File format: `INITIALS,TIME_SECONDS` (one per line)
+- Automatically created on first high score
+- Uses only ~60 bytes of flash storage
+- Persists across power cycles
+- **No SD card required** - all data stored on microcontroller
+
+### Memory Impact
+- **Flash Storage**: 60 bytes (negligible - 0.003% of available space)
+- **RAM Usage**: ~300-500 bytes peak during high score operations
+- **Performance**: Zero impact on gameplay (file I/O only at game end)
 
 ## Troubleshooting
 
