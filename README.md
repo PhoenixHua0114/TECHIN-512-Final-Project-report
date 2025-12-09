@@ -107,7 +107,6 @@ circuitpython_game/
 
 ### LED Manager (`led_manager.py`)
 - Controls single WS2812B NeoPixel LED
-- **Auto-timeout**: All LED states automatically turn off after 3 seconds
 - **Color States**:
   - Yellow (255, 255, 0): Boot/startup
   - Blue (0, 0, 255): Correct choice
