@@ -109,7 +109,6 @@ circuitpython_game/
 
 ### LED Manager (`led_manager.py`)
 - Controls single WS2812B NeoPixel LED
-- **Auto-timeout**: All LED states automatically turn off after 3 seconds
 - **Color States**:
   - Yellow (255, 255, 0): Boot/startup
   - Blue (0, 0, 255): Correct choice
@@ -322,9 +321,9 @@ DISPLAY_HEIGHT = 64
 DISPLAY_ADDRESS = 0x3C        # I2C address
 ```
 
-## Enclosure design
+## Enclosure Design
 - The idea of the enclosure is a simple white box, where we can treat is as the place we store the memory
-- There are some painting and textures on the box's surface, indicating important pieces of the memory
+- There are some paintings and textures on the box's surface, indicating important pieces of the memory
 
 ## Credits
 
